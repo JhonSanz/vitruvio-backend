@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, HTTPException
 from backend.app.api.crud import item as crud_item
 from backend.app.api.schemas.item import (
@@ -11,12 +11,15 @@ from backend.app.api.schemas.item import (
 router = APIRouter()
 
 
-@router.get("/{item_id}", response_model=ItemBase)
-def get_item(item_id: int):
-    db_item = crud_item.get_item(item_id=item_id)
-    if db_item is None:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return db_item
+@router.get("/{item_id}", response_model=dict)
+def get_item(item_label: str, item_id: str):
+    try:
+        item = crud_item.get_item(item_id=item_id, item_label=item_label)
+        if not item:
+            raise HTTPException(status_code=404, detail=f"Item with ID {item_id} not found for type {item_label}")
+        return item
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch item: {str(e)}")
 
 
 @router.get("/", response_model=List[dict])
@@ -25,21 +28,13 @@ def get_items(entity: str, code: str | None = None):
     return items
 
 
-@router.post("/", response_model=ItemBase)
+@router.post("/", response_model=dict)
 def create_item(item: ItemCreate):
-    return crud_item.create_item(item=item)
-
-
-@router.put("/{item_id}", response_model=ItemBase)
-def update_item(
-    item_id: int, item: ItemUpdate
-):
-    db_item = crud_item.update_item(
-        item_id=item_id, item=item
-    )
-    if db_item is None:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return db_item
+    created_item = crud_item.create_item(item=item)
+    if created_item:
+        return created_item
+    else:
+        raise HTTPException(status_code=500, detail="Failed to create item")
 
 
 @router.delete("/{item_id}", response_model=bool)
