@@ -1,8 +1,12 @@
 from fastapi import FastAPI
 from app.api.router import api_router
 from fastapi.middleware.cors import CORSMiddleware
+from neomodel import config
+
 
 app = FastAPI()
+config.DATABASE_URL = 'bolt://neo4j:holamundo@localhost:7687'
+
 app.include_router(api_router)
 
 origins = [
