@@ -32,7 +32,7 @@ def get_items(*, entity: str, code: str | None) -> List[Item]:
 
     try:
         result, _ = db.cypher_query(query)
-        nodes = [extract_node_properties(record) for record in result]
+        nodes = [extract_node_properties(record[0]) for record in result]
         return nodes
     except Exception as e:
         print(f"Failed to fetch nodes: {str(e)}")
