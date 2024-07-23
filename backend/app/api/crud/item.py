@@ -1,6 +1,6 @@
 from typing import List
-from app.database.models import Item
-from app.api.schemas.item import ItemCreate, ItemUpdate
+from backend.app.database.models import Item
+from backend.app.api.schemas.item import ItemCreate, ItemUpdate
 from neomodel import db
 
 
@@ -14,13 +14,12 @@ def create_item(*, item: ItemCreate):
     label = item.label
     properties = item.properties
 
-    query = f"CREATE (:{label} $properties)"
+    query = f"CREATE (n:{label} $properties) RETURN n"
     params = {"properties": properties}
 
     try:
-        result = db.cypher_query(query, params=params)
-        print(result)
-        return result
+        db.cypher_query(query, params=params)
+        return {"message": "Node created successfully", "data": f"(n:{label} {properties})"}
     except Exception as e:
         raise e
 

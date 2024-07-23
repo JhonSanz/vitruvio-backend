@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
-from app.api.crud import item as crud_item
-from app.api.schemas.item import (
+from backend.app.api.crud import item as crud_item
+from backend.app.api.schemas.item import (
     ItemBase,
     ItemCreate,
     ItemUpdate,
