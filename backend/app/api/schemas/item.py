@@ -1,10 +1,9 @@
 from pydantic import BaseModel
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 
 class ItemBase(BaseModel):
-    label: str
-    code: str
+    labels: List[str]
     properties: Dict[str, Any]
 
 
