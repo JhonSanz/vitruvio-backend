@@ -9,8 +9,8 @@ def get_entity(*, entity_id: int):
 def get_entities(*, skip: int = 0, limit: int = 10):
     query = "CALL db.labels()"
     try:
-        result = db.cypher_query(query)
-        labels = [record[0] for record in result]
+        result, _ = db.cypher_query(query)
+        labels = [{"name": record[0]} for record in result]
         return labels
     except Exception as e:
         print(f"Failed to fetch node labels: {str(e)}")
