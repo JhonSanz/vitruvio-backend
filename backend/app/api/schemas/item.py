@@ -7,8 +7,10 @@ class ItemBase(BaseModel):
     properties: Dict[str, Any]
 
 
-class ItemCreate(ItemBase):
-    pass
+class ItemCreate(BaseModel):
+    label: str
+    code: str
+    properties: Dict[str, Any]
 
 
 class ItemUpdate(ItemBase):

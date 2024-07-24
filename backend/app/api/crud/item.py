@@ -30,6 +30,7 @@ def get_items(*, entity: str, code: str | None) -> List[Item]:
         query += " WHERE " + " AND ".join(conditions)
     query += " RETURN n"
 
+    print(query)
     try:
         result, _ = db.cypher_query(query)
         nodes = [extract_node_properties(record[0]) for record in result]
