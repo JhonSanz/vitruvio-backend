@@ -30,7 +30,6 @@ def create_relation(*, relation: RelationCreate) -> bool:
     )
     
     result, _ = db.cypher_query(relation_query)
-    print(result)
     return True
 
 
