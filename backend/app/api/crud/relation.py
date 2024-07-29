@@ -25,7 +25,7 @@ def create_relation(*, relation: RelationCreate) -> bool:
     relation_query = (
         f"MATCH (origin:{relation.origin_label} {{code: '{relation.origin_code}'}}), "
         f"(destination:{relation.target_label} {{code: '{relation.target_code}'}}) "
-        f"CREATE (origin)-[:{relation.relation_name}]->(destination) "
+        f"CREATE (origin)<-[:{relation.relation_name}]-(destination) "
         "RETURN origin, destination"
     )
     
@@ -35,7 +35,7 @@ def create_relation(*, relation: RelationCreate) -> bool:
 
 def get_related_nodes(*, origin_code: str) -> List[Item]:
     relation_query = (
-        f"MATCH (n {{ code: '{origin_code}' }})-[*1]->(related)"
+        f"MATCH (n {{ code: '{origin_code}' }})<-[*1]-(related)"
         "RETURN related"
     )
     try:
