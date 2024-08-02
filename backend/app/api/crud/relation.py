@@ -1,10 +1,11 @@
+import json
 from typing import List
 from backend.app.api.schemas.item import ItemCreate, Item
-from backend.app.api.schemas.relation import RelationCreate, RelationGet
+from backend.app.api.schemas.relation import RelationCreate, RelationCreateInsumo
 from neomodel import db
 from backend.app.api.utils.node_format import extract_node_properties
 from backend.app.api.schemas.relation import Relation
-from backend.app.api.crud.item import create_item, get_item
+from backend.app.api.crud.item import create_item, get_item, get_item_by_code
 
 
 def create_relation(*, relation: RelationCreate) -> bool:
@@ -45,3 +46,34 @@ def get_related_nodes(*, origin_code: str) -> List[Item]:
     except Exception as e:
         print(f"Failed to fetch nodes: {str(e)}")
         return []
+
+
+def create_relation_graph(*, relation: RelationCreateInsumo) -> bool:
+    # target_node = get_item_by_code(item_id=relation.target_code)
+    target_node = get_item_by_code(item_id="AAEAER")
+    if not target_node:
+        return None
+
+    origin_node = get_item_by_code(item_id=relation.origin_code)
+    if not origin_node:
+        return None
+    
+    processed_properties = {item.name:item.value for item in relation.properties}
+    
+    relation_query = (
+        "MATCH (origin {code: $origin_code}), "
+        "(destination {code: $destination_code}) "
+        f"CREATE (origin)<-[:{relation.relation_name} $properties]-(destination) "
+        "RETURN origin, destination"
+    )
+    
+    # Use parameters for safer query execution
+    params = {
+        'origin_code': relation.origin_code,
+        'destination_code': 'AAEAER',
+        # 'relation_name': relation.relation_name,
+        'properties': processed_properties
+    }
+    
+    result, _ = db.cypher_query(relation_query, params)
+    return True

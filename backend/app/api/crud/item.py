@@ -18,6 +18,19 @@ def get_item(*, item_label: str, item_id: str) -> Item:
         return None
 
 
+def get_item_by_code(*, item_id: str) -> Item:
+    query = f"MATCH (n {{code: \"{item_id}\"}}) RETURN n"
+    try:
+        result, _ = db.cypher_query(query)
+        if not result:
+            return None
+        node = result[0][0]
+        return extract_node_properties(node)
+    except Exception as e:
+        print(f"Failed to fetch item: {str(e)}")
+        return None
+
+
 def get_items(*, entity: str, code: str | None) -> List[Item]:
     query = "MATCH (n)"
     conditions = []
@@ -49,6 +62,7 @@ def create_item(*, item: ItemCreate) -> Item:
 
     try:
         result, _ = db.cypher_query(query, params=params)
+        print(result)
         return extract_node_properties(result[0][0])
     except Exception as e:
         print(f"Failed to create item: {str(e)}")
