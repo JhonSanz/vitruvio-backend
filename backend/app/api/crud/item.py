@@ -34,7 +34,7 @@ def get_item_by_code(*, item_id: str) -> Item:
 def get_items_by_code_or_name(*, item_id: str = "", item_name: str = "") -> Item:
     query = (
         "MATCH (n) "
-        "WHERE n.name = $name OR n.code = $code "
+        "WHERE n.name CONTAINS $name OR n.code CONTAINS $code "
         "RETURN n"
     )
     
@@ -77,7 +77,7 @@ def get_items(*, entity: str, code: str | None) -> List[Item]:
 
 def create_item(*, item: ItemCreate) -> Item:
     label = item.label.replace(" ", "")
-    properties = item.properties
+    properties = {key:value for key, value in item.properties.items() if key and value}
 
     query = f"CREATE (n:{label} $properties) RETURN n"
     params = {"properties": {**properties, "code": item.code}}

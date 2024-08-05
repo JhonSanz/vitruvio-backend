@@ -1,3 +1,4 @@
+from neomodel import db
 from backend.app.api.crud.item import create_item, get_item_by_code
 from backend.app.api.crud.relation import create_relation_graph
 from backend.app.api.schemas.graph import DataModel, DataInsumos
@@ -13,6 +14,7 @@ def create_graph(data_model: DataModel):
                 create_item(item=ItemCreate(label=label, code=f"{label}{node["name"]}{i}", properties=node))
 
 
+@db.transaction
 def create_insumo(data_model: DataInsumos):
     processed_params = {item.name:item.value for item in data_model.nodeParams}
     processed_params["name"] = data_model.name

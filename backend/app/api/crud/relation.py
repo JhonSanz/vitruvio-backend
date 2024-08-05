@@ -49,8 +49,7 @@ def get_related_nodes(*, origin_code: str) -> List[Item]:
 
 
 def create_relation_graph(*, relation: RelationCreateInsumo) -> bool:
-    # target_node = get_item_by_code(item_id=relation.target_code)
-    target_node = get_item_by_code(item_id="AAEAER")
+    target_node = get_item_by_code(item_id=relation.target_code)
     if not target_node:
         return None
 
@@ -58,8 +57,11 @@ def create_relation_graph(*, relation: RelationCreateInsumo) -> bool:
     if not origin_node:
         return None
     
-    processed_properties = {item.name:item.value for item in relation.properties}
-    
+    processed_properties = {}
+    for item in relation.properties:
+        if item.name and item.value:
+            processed_properties[item.name] = item.value
+
     relation_query = (
         "MATCH (origin {code: $origin_code}), "
         "(destination {code: $destination_code}) "
@@ -67,10 +69,9 @@ def create_relation_graph(*, relation: RelationCreateInsumo) -> bool:
         "RETURN origin, destination"
     )
     
-    # Use parameters for safer query execution
     params = {
         'origin_code': relation.origin_code,
-        'destination_code': 'AAEAER',
+        'destination_code': relation.target_code,
         # 'relation_name': relation.relation_name,
         'properties': processed_properties
     }
