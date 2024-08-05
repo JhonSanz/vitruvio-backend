@@ -10,6 +10,7 @@ class ItemBase(BaseModel):
 class ItemCreate(BaseModel):
     label: str
     code: str
+    name: str | None
     properties: Dict[str, Any]
 
 

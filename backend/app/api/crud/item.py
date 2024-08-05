@@ -31,6 +31,28 @@ def get_item_by_code(*, item_id: str) -> Item:
         return None
 
 
+def get_items_by_code_or_name(*, item_id: str = "", item_name: str = "") -> Item:
+    query = (
+        "MATCH (n) "
+        "WHERE n.name = $name OR n.code = $code "
+        "RETURN n"
+    )
+    
+    params = {
+        "code": item_id,
+        "name": item_name,
+    }
+
+    try:
+        result, _ = db.cypher_query(query, params)
+        print(result)
+        nodes = [extract_node_properties(record[0]) for record in result]
+        return nodes
+    except Exception as e:
+        print(f"Failed to fetch item: {str(e)}")
+        return None
+
+
 def get_items(*, entity: str, code: str | None) -> List[Item]:
     query = "MATCH (n)"
     conditions = []

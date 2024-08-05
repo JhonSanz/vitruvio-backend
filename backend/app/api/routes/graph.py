@@ -18,8 +18,9 @@ def receive_data(data_model: DataModel):
 
 @router.post("/insumo")
 def create_insumo(data_model: DataInsumos):
+    print("route", data_model)
     try:
         create_graph.create_insumo(data_model)
         return 200
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to create graph {e}")
+        raise HTTPException(status_code=400, detail=f"Failed to create graph {e}")
