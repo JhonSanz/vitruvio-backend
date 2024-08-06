@@ -22,6 +22,11 @@ def get_items(direction: str | None = None):
     return items
 
 
+@router.get("/node-children", response_model=List[Item])
+def get_node_children(node_code: str):
+    return crud_graph.get_node_children(code=node_code)
+
+
 @router.post("/insumo")
 def create_insumo(data_model: DataInsumos):
     print("route", data_model)

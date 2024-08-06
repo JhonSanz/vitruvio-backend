@@ -50,3 +50,18 @@ def show_nodes(*, direction: str):
         print(f"Failed to fetch nodes: {str(e)}")
         return []
 
+
+def get_node_children(*, code: str):
+    query = (
+        "MATCH (n {code: $code})"
+        "<-[*1]-(m) "
+        "RETURN DISTINCT m"
+    )
+    params = { "code": code }
+    try:
+        result, _ = db.cypher_query(query, params)
+        nodes = [extract_node_properties(record[0]) for record in result]
+        return nodes
+    except Exception as e:
+        print(f"Failed to fetch nodes: {str(e)}")
+        return []
