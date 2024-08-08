@@ -1,7 +1,7 @@
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException
 from backend.app.api.crud import graph as crud_graph
-from backend.app.api.schemas.graph import DataModel, DataInsumos
+from backend.app.api.schemas.graph import DataModel, DataInsumos, NodeUpdateRelations, NodeDelete
 from backend.app.api.crud.item import Item
 
 
@@ -27,11 +27,31 @@ def get_node_children(node_code: str):
     return crud_graph.get_node_children(code=node_code)
 
 
+@router.get("/node-incoming-edges")
+def get_node_incoming_edges(node_code: str):
+    return crud_graph.get_node_incoming_edges(code=node_code)
+
+
 @router.post("/insumo")
 def create_insumo(data_model: DataInsumos):
-    print("route", data_model)
     try:
         crud_graph.create_insumo(data_model)
         return 200
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to create graph {e}")
+
+
+@router.post("/update-node-relations")
+def update_node_relations(data_model: NodeUpdateRelations):
+    try:
+        crud_graph.update_node_relations(data_model=data_model)
+        return 200
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to create graph {e}")
+
+
+
+@router.post("/delete-node")
+def delete_node(data_model: NodeDelete):
+    items = crud_graph.delete_node(node_code=data_model.node_code)
+    return items

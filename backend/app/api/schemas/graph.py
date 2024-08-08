@@ -31,3 +31,12 @@ class DataInsumos(BaseModel):
     type: str
     nodeParams: List[ParamsSchema]
     nodeRelations: List[RelationsSchema] | None
+
+
+class NodeUpdateRelations(BaseModel):
+    node: str
+    relations: List[RelationsSchema] | None
+
+
+class NodeDelete(BaseModel):
+    node_code: str
