@@ -28,7 +28,7 @@ def create_insumo(data_model: DataInsumos):
     create_item(item=node)
     for rel in data_model.nodeRelations:
         create_relation_graph(relation=RelationCreateInsumo(
-            relation_name="HAS",
+            relation_name="BELONGS",
             origin_code=node.code,
             target_code=rel.related,
             properties=rel.params
@@ -100,7 +100,7 @@ def update_node_relations(*, data_model: NodeUpdateRelations):
     delete_all_relations(code=data_model.node)
     for rel in data_model.relations:
         create_relation_graph(relation=RelationCreateInsumo(
-            relation_name="HAS",
+            relation_name="BELONGS",
             origin_code=data_model.node,
             target_code=rel.related,
             properties=rel.params
